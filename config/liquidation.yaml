@@ -1,0 +1,6 @@
+scan_interval_seconds: 10
+min_liquidation_size_usdc: 1000
+position_size_usdc: 150
+max_hold_seconds: 60
+profit_target_bps: 20
+assets_whitelist: []

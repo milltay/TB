@@ -1,0 +1,33 @@
+account_address: "0xYOUR_MAIN_WALLET_ADDRESS"
+secret_key: "0xYOUR_API_WALLET_PRIVATE_KEY"
+network: "testnet"  # "mainnet" or "testnet"
+starting_balance_usdc: 3400
+
+risk:
+  max_total_exposure_usdc: 2500
+  max_per_asset_exposure_usdc: 800
+  max_drawdown_pct: 5.0
+  max_open_orders: 20
+  correlation_check: true
+
+execution:
+  default_leverage: 3
+  batch_size: 10
+  retry_attempts: 3
+  retry_backoff_base_ms: 200
+
+alerts:
+  discord_webhook_url: ""
+  alert_on_fill: true
+  alert_on_error: true
+  alert_on_drawdown_pct: 3.0
+
+metrics:
+  prometheus_port: 9090
+
+strategies:
+  enabled:
+    - market_making
+    - funding_arb
+    # - momentum
+    # - liquidation

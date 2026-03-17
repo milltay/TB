@@ -1,0 +1,9 @@
+assets: ["BTC", "ETH"]
+spread_bps: 3
+order_size_usdc: 50
+num_levels: 3
+level_spacing_bps: 2
+inventory_skew_factor: 0.5
+max_inventory_usdc: 400
+refresh_interval_ms: 500
+use_alo: true

@@ -1,0 +1,10 @@
+assets: ["BTC", "ETH", "SOL"]
+lookback_candles: 20
+candle_interval: "5m"
+entry_threshold_pct: 0.5
+position_size_usdc: 200
+take_profit_pct: 1.5
+stop_loss_pct: 0.8
+max_concurrent_positions: 2
+cooldown_after_stop_seconds: 300
+use_vwap_confirmation: true

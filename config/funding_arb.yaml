@@ -1,0 +1,7 @@
+min_funding_rate_annualized: 15.0
+position_size_usdc: 300
+max_concurrent_positions: 3
+check_interval_seconds: 60
+exit_threshold_annualized: 5.0
+assets_whitelist: []
+delta_neutral: false  # Single-leg only; no spot hedge
