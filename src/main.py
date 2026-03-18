@@ -67,6 +67,7 @@ def init_strategies(
 
 async def setup_hyperliquid(config: GlobalConfig):
     """Initialize Hyperliquid SDK objects."""
+    from eth_account import Account
     from hyperliquid.exchange import Exchange
     from hyperliquid.info import Info
     from hyperliquid.utils import constants
@@ -78,8 +79,9 @@ async def setup_hyperliquid(config: GlobalConfig):
     )
 
     info = Info(base_url, skip_ws=True)
+    wallet = Account.from_key(config.secret_key)
     exchange = Exchange(
-        wallet=None,
+        wallet=wallet,
         base_url=base_url,
         account_address=config.account_address,
     )
