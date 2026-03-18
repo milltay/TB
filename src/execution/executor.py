@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import math
 import time
 import uuid
 
@@ -124,11 +125,27 @@ class Executor:
         # Map order type to Hyperliquid TIF
         tif = self._get_tif(intent.order_type)
 
+        # Round size to asset's szDecimals and price to 5 significant figures
+        sz_decimals = self._state.get_sz_decimals(intent.asset) if self._state else 0
+        rounded_sz = round(intent.size, sz_decimals)
+        rounded_px = self._round_to_sig_figs(intent.price, 5)
+
+        if rounded_sz <= 0:
+            log.warning("size_rounded_to_zero", asset=intent.asset, original_size=intent.size)
+            return OrderResult(
+                cloid=intent.cloid,
+                oid=None,
+                status=OrderStatus.REJECTED,
+                asset=intent.asset,
+                side=intent.side,
+                strategy_name=intent.strategy_name,
+            )
+
         order_spec = {
             "coin": intent.asset,
             "is_buy": is_buy,
-            "sz": intent.size,
-            "limit_px": intent.price,
+            "sz": rounded_sz,
+            "limit_px": rounded_px,
             "order_type": tif,
             "reduce_only": intent.reduce_only,
         }
@@ -195,6 +212,16 @@ class Executor:
                 side=intent.side,
                 strategy_name=intent.strategy_name,
             )
+
+    @staticmethod
+    def _round_to_sig_figs(value: float, sig_figs: int) -> float:
+        """Round a float to the given number of significant figures."""
+        if value == 0:
+            return 0.0
+        d = math.ceil(math.log10(abs(value)))
+        power = sig_figs - d
+        magnitude = 10**power
+        return round(value * magnitude) / magnitude
 
     @staticmethod
     def _get_tif(order_type: OrderType) -> dict:

@@ -84,13 +84,15 @@ async def setup_hyperliquid(config: GlobalConfig):
         account_address=config.account_address,
     )
 
-    # Build asset index map
+    # Build asset index map and sz_decimals
     meta = info.meta()
     asset_map = {}
+    sz_decimals_map = {}
     for i, asset_info in enumerate(meta["universe"]):
         asset_map[asset_info["name"]] = i
+        sz_decimals_map[asset_info["name"]] = asset_info.get("szDecimals", 0)
 
-    return info, exchange, asset_map
+    return info, exchange, asset_map, sz_decimals_map
 
 
 async def main_loop(
@@ -133,8 +135,9 @@ async def main_loop(
     exchange = None
     if not dry_run and config.secret_key and not config.secret_key.startswith("0xYOUR"):
         try:
-            info, exchange, asset_map = await setup_hyperliquid(config)
+            info, exchange, asset_map, sz_decimals_map = await setup_hyperliquid(config)
             await state.set_asset_index_map(asset_map)
+            await state.set_sz_decimals(sz_decimals_map)
             log.info("hyperliquid_sdk_initialized", assets=len(asset_map))
         except Exception:
             log.exception("sdk_init_failed")

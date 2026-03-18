@@ -29,6 +29,7 @@ class StateStore:
         self._mids: dict[str, float] = {}
         self._open_order_count: int = 0
         self._asset_index_map: dict[str, int] = {}
+        self._sz_decimals: dict[str, int] = {}
 
     # --- Write methods (called from data layer) ---
 
@@ -99,6 +100,10 @@ class StateStore:
         async with self._lock:
             self._asset_index_map = dict(mapping)
 
+    async def set_sz_decimals(self, mapping: dict[str, int]) -> None:
+        async with self._lock:
+            self._sz_decimals = dict(mapping)
+
     # --- Read methods (lock-free, return copies) ---
 
     def get_book(self, asset: str) -> BookSnapshot | None:
@@ -133,3 +138,6 @@ class StateStore:
 
     def get_asset_index_map(self) -> dict[str, int]:
         return dict(self._asset_index_map)
+
+    def get_sz_decimals(self, asset: str) -> int:
+        return self._sz_decimals.get(asset, 0)
